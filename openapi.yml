@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: AB Crusher API
+  version: 0.0.1
+servers:
+  - url: /api/v1
+paths:
+  /tests:
+    get:
+      summary: Returns a list of current and past tests
+      responses:
+        '200':    # status code
+          description: A JSON array of Test objects
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Test'
+components:
+  schemas:
+    Metric:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - BINOMIAL
+            - COUNT
+            - NPS
+    Variation:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        weight:
+          type: float
+        active:
+          type: boolean
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+              width:
+                type: int
+              height:
+                type: int
+    Test:
+      type: object
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - PENDING
+            - RUNNING
+            - STOPPED
+        description:
+          type: string
+        hypothesis:
+          type: string
+        variations:
+          type: array
+          items: 
+            $ref: '#/components/schemas/Variation'
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metric'
+        results:
+          type: object
+          properties:
+            summary:
+              type: string
+            analysis:
+              type: string
+            learnings:
+              - type: string
+            outcome:
+              type: string
+              enum:
+                - WIN
+                - LOSS
+                - DRAW
+                - DNF
+            future_baseline:
+              type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        started_at:
+          type: string
+        stopped_at:
+          type: string
