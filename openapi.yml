@@ -10,15 +10,85 @@ paths:
       summary: Returns a list of current and past tests
       responses:
         '200':    # status code
-          description: A JSON array of Test objects
+          description: A JSON array of TestSummary objects
           content:
             application/json:
               schema: 
                 type: array
                 items: 
-                  $ref: '#/components/schemas/Test'
+                  $ref: '#/components/schemas/TestSummary'
+    post:
+      summary: Create a new Test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Test'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+  /test/{testId}:
+    get:
+      summary: Return data for a single Test
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: A single Test object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+    put:
+      summary: Update a Test
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Test'
+      responses:
+        '200':
+          description: A single Test object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+    delete:
+      summary: Delete a Test
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Deleted
 components:
   schemas:
+    TestStatus:
+      type: string
+      enum:
+        - DRAFT
+        - PENDING
+        - RUNNING
+        - STOPPED
     Metric:
       type: object
       properties:
@@ -54,6 +124,27 @@ components:
                 type: int
               height:
                 type: int
+    TestSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/TestStatus'
+        description:
+          type: string
+        hypothesis:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        started_at:
+          type: string
+        stopped_at:
+          type: string
     Test:
       type: object
       properties:
@@ -62,12 +153,7 @@ components:
         name:
           type: string
         status:
-          type: string
-          enum:
-            - DRAFT
-            - PENDING
-            - RUNNING
-            - STOPPED
+          $ref: '#/components/schemas/TestStatus'
         description:
           type: string
         hypothesis:
