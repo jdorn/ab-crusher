@@ -80,8 +80,102 @@ paths:
       responses:
         '200':
           description: Deleted
+  
+  /test/{testId}/snapshots:
+    get:
+      summary: Return data snapshots for a test
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: An array of data snapshots
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Snapshot'
+    post:
+      summary: Create a new snapshot for a test
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: The snapshot created
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Snapshot'
+  /events:
+    get:
+      summary: Get a list of events
+      responses:
+        '200':
+          description: An array of events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
 components:
   schemas:
+    Event:
+      type: object
+      properties:
+        timestamp:
+          type: string
+        user:
+          type: string
+        event:
+          type: string
+        objectId:
+          type: string
+        data:
+          type: object
+    Snapshot:
+      type: object
+      properties:
+        id:
+          type: string
+        testId:
+          type: string
+        created:
+          type: string
+        variations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              samples:
+                type: int
+              metrics:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    value:
+                      type: float
+                    rawData:
+                      type: object
+                    chanceToBeatBaseline:
+                      type: float
+                    enoughData:
+                      type: boolean
+                    confidenceLow:
+                      type: float
+                    confidenceHigh:
+                      type: float
     TestStatus:
       type: string
       enum:
