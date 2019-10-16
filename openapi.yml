@@ -216,8 +216,96 @@ paths:
       responses:
         '200':
           description: Deleted
+  /insights:
+    get:
+      summary: Returns a list of insights
+      responses:
+        '200':    # status code
+          description: A JSON array of Insight objects
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Insight'
+    post:
+      summary: Create a new Insight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insight'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+  /insight/{insightId}:
+    get:
+      summary: Return data for a single Insight
+      parameters:
+        - in: path
+          name: insightId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: A single Insight object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+    put:
+      summary: Update a Insight
+      parameters:
+        - in: path
+          name: insightId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insight'
+      responses:
+        '200':
+          description: A single Insight object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+    delete:
+      summary: Delete a Insight
+      parameters:
+        - in: path
+          name: insightId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Deleted
 components:
   schemas:
+    Insight:
+      type: object
+      properties:
+        id:
+          type: string
+        testIds:
+          type: array
+          items:
+            type: string
+        insight:
+          type: string
+        votes:
+          type: int
     Event:
       type: object
       properties:
@@ -359,8 +447,6 @@ components:
               type: string
             analysis:
               type: string
-            learnings:
-              - type: string
             outcome:
               type: string
               enum:
