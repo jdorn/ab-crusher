@@ -80,7 +80,6 @@ paths:
       responses:
         '200':
           description: Deleted
-  
   /test/{testId}/snapshots:
     get:
       summary: Return data snapshots for a test
@@ -123,7 +122,100 @@ paths:
           content:
             application/json:
               schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /event/{eventId}:
+    get:
+      summary: Get a single Event
+      parameters:
+        - in: path
+          name: eventId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: The event
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Event'
+  /metrics:
+    get:
+      summary: Returns a list of metrics
+      responses:
+        '200':    # status code
+          description: A JSON array of Metric objects
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Metric'
+    post:
+      summary: Create a new Metric
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metric'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+  /metric/{metricId}:
+    get:
+      summary: Return data for a single Metric
+      parameters:
+        - in: path
+          name: metricId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: A single Metric object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+    put:
+      summary: Update a Metric
+      parameters:
+        - in: path
+          name: metricId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metric'
+      responses:
+        '200':
+          description: A single Metric object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+    delete:
+      summary: Delete a Metric
+      parameters:
+        - in: path
+          name: metricId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Deleted
 components:
   schemas:
     Event:
