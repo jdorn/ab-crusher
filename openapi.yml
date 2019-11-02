@@ -8,6 +8,7 @@ paths:
   /tests:
     get:
       summary: Returns a list of current and past tests
+      tags: ["Tests"]
       responses:
         '200':    # status code
           description: A JSON array of TestSummary objects
@@ -19,6 +20,7 @@ paths:
                   $ref: '#/components/schemas/TestSummary'
     post:
       summary: Create a new Test
+      tags: ["Tests"]
       requestBody:
         required: true
         content:
@@ -35,6 +37,7 @@ paths:
   /test/{testId}:
     get:
       summary: Return data for a single Test
+      tags: ["Tests"]
       parameters:
         - in: path
           name: testId
@@ -50,6 +53,7 @@ paths:
                 $ref: '#/components/schemas/Test'
     put:
       summary: Update a Test
+      tags: ["Tests"]
       parameters:
         - in: path
           name: testId
@@ -71,6 +75,7 @@ paths:
                 $ref: '#/components/schemas/Test'
     delete:
       summary: Delete a Test
+      tags: ["Tests"]
       parameters:
         - in: path
           name: testId
@@ -83,6 +88,7 @@ paths:
   /test/{testId}/snapshots:
     get:
       summary: Return data snapshots for a test
+      tags: ["Tests"]
       parameters:
         - in: path
           name: testId
@@ -100,6 +106,7 @@ paths:
                   $ref: '#/components/schemas/Snapshot'
     post:
       summary: Create a new snapshot for a test
+      tags: ["Tests"]
       parameters:
         - in: path
           name: testId
@@ -116,6 +123,7 @@ paths:
   /events:
     get:
       summary: Get a list of events
+      tags: ["Events"]
       responses:
         '200':
           description: An array of events
@@ -128,6 +136,7 @@ paths:
   /event/{eventId}:
     get:
       summary: Get a single Event
+      tags: ["Events"]
       parameters:
         - in: path
           name: eventId
@@ -144,6 +153,7 @@ paths:
   /metrics:
     get:
       summary: Returns a list of metrics
+      tags: ["Metrics"]
       responses:
         '200':    # status code
           description: A JSON array of Metric objects
@@ -155,6 +165,7 @@ paths:
                   $ref: '#/components/schemas/Metric'
     post:
       summary: Create a new Metric
+      tags: ["Metrics"]
       requestBody:
         required: true
         content:
@@ -171,6 +182,7 @@ paths:
   /metric/{metricId}:
     get:
       summary: Return data for a single Metric
+      tags: ["Metrics"]
       parameters:
         - in: path
           name: metricId
@@ -186,6 +198,7 @@ paths:
                 $ref: '#/components/schemas/Metric'
     put:
       summary: Update a Metric
+      tags: ["Metrics"]
       parameters:
         - in: path
           name: metricId
@@ -207,6 +220,7 @@ paths:
                 $ref: '#/components/schemas/Metric'
     delete:
       summary: Delete a Metric
+      tags: ["Metrics"]
       parameters:
         - in: path
           name: metricId
@@ -219,6 +233,7 @@ paths:
   /insights:
     get:
       summary: Returns a list of insights
+      tags: ["Insights"]
       responses:
         '200':    # status code
           description: A JSON array of Insight objects
@@ -230,6 +245,7 @@ paths:
                   $ref: '#/components/schemas/Insight'
     post:
       summary: Create a new Insight
+      tags: ["Insights"]
       requestBody:
         required: true
         content:
@@ -246,6 +262,7 @@ paths:
   /insight/{insightId}:
     get:
       summary: Return data for a single Insight
+      tags: ["Insights"]
       parameters:
         - in: path
           name: insightId
@@ -261,6 +278,7 @@ paths:
                 $ref: '#/components/schemas/Insight'
     put:
       summary: Update a Insight
+      tags: ["Insights"]
       parameters:
         - in: path
           name: insightId
@@ -282,6 +300,7 @@ paths:
                 $ref: '#/components/schemas/Insight'
     delete:
       summary: Delete a Insight
+      tags: ["Insights"]
       parameters:
         - in: path
           name: insightId
@@ -298,64 +317,105 @@ components:
       properties:
         id:
           type: string
+          example: "i_123abc"
         testIds:
           type: array
           items:
             type: string
+            example: "t_123abc"
         insight:
           type: string
+          example: "Green buttons get higher click throughs than Red buttons"
         votes:
-          type: int
+          type: integer
     Event:
       type: object
       properties:
         timestamp:
           type: string
+          format: date-time
         user:
           type: string
+          example: "u_123abc"
         event:
           type: string
+          example: "metric.updated"
         objectId:
           type: string
+          example: "m_123abc"
         data:
           type: object
-    Snapshot:
+          example:
+            previousProps:
+              type: BINOMIAL
+            newProps:
+              type: COUNT
+    SnapshotVariation:
       type: object
       properties:
-        id:
-          type: string
-        testId:
-          type: string
-        created:
-          type: string
-        variations:
+        variation:
+          type: integer
+        samples:
+          type: integer
+          example: 800
+        metrics:
           type: array
           items:
             type: object
             properties:
               id:
                 type: string
-              samples:
-                type: int
-              metrics:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    value:
-                      type: float
-                    rawData:
-                      type: object
-                    chanceToBeatBaseline:
-                      type: float
-                    enoughData:
-                      type: boolean
-                    confidenceLow:
-                      type: float
-                    confidenceHigh:
-                      type: float
+                example: "m_123abc"
+              value:
+                type: number
+                example: 0.23
+              rawData:
+                type: object
+              chanceToBeatBaseline:
+                type: number
+                minimum: 0
+                maximum: 1
+                example: 0.82
+              enoughData:
+                type: boolean
+              confidenceLow:
+                type: number
+                example: -0.03
+              confidenceHigh:
+                type: number
+                example: 0.12
+    Snapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "s_123abc"
+        testId:
+          type: string
+          example: "t_123abc"
+        created:
+          type: string
+          format: date-time
+        variations:
+          type: array
+          items:
+            $ref: "#/components/schemas/SnapshotVariation"
+          example:
+          - variation: 0
+            samples: 1802
+            metrics:
+            - id: "m_123abc"
+              value: 0.23
+              enoughData: true
+          - variation: 1
+            samples: 1954
+            metrics:
+            - id: "m_123abc"
+              value: 0.25
+              enoughData: true
+              chanceToBeatBaseline: 0.82
+              confidenceLow: -0.03
+              confidenceHigh: 0.16
     TestStatus:
       type: string
       enum:
@@ -368,8 +428,10 @@ components:
       properties:
         id:
           type: string
+          example: "m_123abc"
         name:
           type: string
+          example: "Registered"
         type:
           type: string
           enum:
@@ -379,12 +441,16 @@ components:
     Variation:
       type: object
       properties:
-        id:
-          type: string
+        variation:
+          type: integer
         name:
           type: string
+          example: "Baseline"
         weight:
-          type: float
+          type: number
+          minimum: 0
+          maximum: 1
+          example: 0.5
         active:
           type: boolean
         images:
@@ -394,44 +460,59 @@ components:
             properties:
               path:
                 type: string
+                example: "https://example.com/123abc.jpg"
               width:
-                type: int
+                type: integer
+                example: 800
               height:
-                type: int
+                type: integer
+                example: 600
     TestSummary:
       type: object
       properties:
         id:
           type: string
+          example: "t_123abc"
         name:
           type: string
+          example: "Button color test"
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
           type: string
+          example: "Seeing if a green button performs better than a red button"
         hypothesis:
           type: string
+          example: "A green button will draw user's attention more and cause click-through to increase"
         created_at:
           type: string
+          format: date-time
         updated_at:
           type: string
+          format: date-time
         started_at:
           type: string
+          format: date-time
         stopped_at:
           type: string
+          format: date-time
     Test:
       type: object
       properties:
         id: 
           type: string
+          example: "t_123abc"
         name:
           type: string
+          example: "Button color test"
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
           type: string
+          example: "Seeing if a green button performs better than a red button"
         hypothesis:
           type: string
+          example: "A green button will draw user's attention more and cause click-through to increase"
         variations:
           type: array
           items: 
@@ -445,8 +526,10 @@ components:
           properties:
             summary:
               type: string
+              example: "Green had a significantly higher CTR"
             analysis:
               type: string
+              example: "Noticed a slight decrease in bounce rate as well, but not sure if related"
             outcome:
               type: string
               enum:
@@ -456,11 +539,16 @@ components:
                 - DNF
             future_baseline:
               type: string
+              example: "Switching to green going forward"
         created_at:
           type: string
+          format: date-time
         updated_at:
           type: string
+          format: date-time
         started_at:
           type: string
+          format: date-time
         stopped_at:
           type: string
+          format: date-time
