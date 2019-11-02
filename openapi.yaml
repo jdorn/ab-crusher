@@ -8,19 +8,27 @@ paths:
   /tests:
     get:
       summary: Returns a list of current and past tests
-      tags: ["Tests"]
+      tags:
+        - Tests
       responses:
-        '200':    # status code
+        '200':
           description: A JSON array of TestSummary objects
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/TestSummary'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a new Test
-      tags: ["Tests"]
+      tags:
+        - Tests
       requestBody:
         required: true
         content:
@@ -34,10 +42,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Test'
-  /test/{testId}:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/test/{testId}':
     get:
       summary: Return data for a single Test
-      tags: ["Tests"]
+      tags:
+        - Tests
       parameters:
         - in: path
           name: testId
@@ -51,9 +66,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Test'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       summary: Update a Test
-      tags: ["Tests"]
+      tags:
+        - Tests
       parameters:
         - in: path
           name: testId
@@ -73,9 +95,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Test'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a Test
-      tags: ["Tests"]
+      tags:
+        - Tests
       parameters:
         - in: path
           name: testId
@@ -85,10 +114,17 @@ paths:
       responses:
         '200':
           description: Deleted
-  /test/{testId}/snapshots:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/test/{testId}/snapshots':
     get:
       summary: Return data snapshots for a test
-      tags: ["Tests"]
+      tags:
+        - Tests
       parameters:
         - in: path
           name: testId
@@ -100,13 +136,20 @@ paths:
           description: An array of data snapshots
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Snapshot'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a new snapshot for a test
-      tags: ["Tests"]
+      tags:
+        - Tests
       parameters:
         - in: path
           name: testId
@@ -118,12 +161,19 @@ paths:
           description: The snapshot created
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/Snapshot'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /events:
     get:
       summary: Get a list of events
-      tags: ["Events"]
+      tags:
+        - Events
       responses:
         '200':
           description: An array of events
@@ -133,10 +183,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
-  /event/{eventId}:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/event/{eventId}':
     get:
       summary: Get a single Event
-      tags: ["Events"]
+      tags:
+        - Events
       parameters:
         - in: path
           name: eventId
@@ -150,22 +207,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Event'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /metrics:
     get:
       summary: Returns a list of metrics
-      tags: ["Metrics"]
+      tags:
+        - Metrics
       responses:
-        '200':    # status code
+        '200':
           description: A JSON array of Metric objects
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Metric'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a new Metric
-      tags: ["Metrics"]
+      tags:
+        - Metrics
       requestBody:
         required: true
         content:
@@ -179,10 +250,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Metric'
-  /metric/{metricId}:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/metric/{metricId}':
     get:
       summary: Return data for a single Metric
-      tags: ["Metrics"]
+      tags:
+        - Metrics
       parameters:
         - in: path
           name: metricId
@@ -196,9 +274,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Metric'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       summary: Update a Metric
-      tags: ["Metrics"]
+      tags:
+        - Metrics
       parameters:
         - in: path
           name: metricId
@@ -218,9 +303,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Metric'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a Metric
-      tags: ["Metrics"]
+      tags:
+        - Metrics
       parameters:
         - in: path
           name: metricId
@@ -230,22 +322,36 @@ paths:
       responses:
         '200':
           description: Deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /insights:
     get:
       summary: Returns a list of insights
-      tags: ["Insights"]
+      tags:
+        - Insights
       responses:
-        '200':    # status code
+        '200':
           description: A JSON array of Insight objects
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
+                items:
                   $ref: '#/components/schemas/Insight'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a new Insight
-      tags: ["Insights"]
+      tags:
+        - Insights
       requestBody:
         required: true
         content:
@@ -259,10 +365,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Insight'
-  /insight/{insightId}:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/insight/{insightId}':
     get:
       summary: Return data for a single Insight
-      tags: ["Insights"]
+      tags:
+        - Insights
       parameters:
         - in: path
           name: insightId
@@ -276,9 +389,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Insight'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       summary: Update a Insight
-      tags: ["Insights"]
+      tags:
+        - Insights
       parameters:
         - in: path
           name: insightId
@@ -298,9 +418,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Insight'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a Insight
-      tags: ["Insights"]
+      tags:
+        - Insights
       parameters:
         - in: path
           name: insightId
@@ -310,39 +437,75 @@ paths:
       responses:
         '200':
           description: Deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      type: object
+      required:
+        - type
+        - message
+      properties:
+        type:
+          type: string
+          enum:
+            - invalid_request_error
+            - authentication_error
+            - api_error
+            - api_connection_error
+            - rate_limit_error
+        message:
+          type: string
+          example: "An unknown error occurred"
+        param:
+          type: string
+          example: "some_param"
     Insight:
       type: object
+      required:
+        - id
+        - testIds
+        - insight
+        - votes
       properties:
         id:
           type: string
-          example: "i_123abc"
+          example: i_123abc
         testIds:
           type: array
           items:
             type: string
-            example: "t_123abc"
+            example: t_123abc
         insight:
           type: string
-          example: "Green buttons get higher click throughs than Red buttons"
+          example: Green buttons get higher click throughs than Red buttons
         votes:
           type: integer
     Event:
       type: object
+      required:
+        - timestamp
+        - user
+        - event
+        - objectId
       properties:
         timestamp:
           type: string
           format: date-time
         user:
           type: string
-          example: "u_123abc"
+          example: u_123abc
         event:
           type: string
-          example: "metric.updated"
+          example: metric.updated
         objectId:
           type: string
-          example: "m_123abc"
+          example: m_123abc
         data:
           type: object
           example:
@@ -352,6 +515,10 @@ components:
               type: COUNT
     SnapshotVariation:
       type: object
+      required:
+        - variation
+        - samples
+        - metrics
       properties:
         variation:
           type: integer
@@ -362,10 +529,14 @@ components:
           type: array
           items:
             type: object
+            required:
+              - id
+              - value
+              - enoughData
             properties:
               id:
                 type: string
-                example: "m_123abc"
+                example: m_123abc
               value:
                 type: number
                 example: 0.23
@@ -386,36 +557,41 @@ components:
                 example: 0.12
     Snapshot:
       type: object
+      required:
+        - id
+        - testId
+        - created
+        - variation
       properties:
         id:
           type: string
-          example: "s_123abc"
+          example: s_123abc
         testId:
           type: string
-          example: "t_123abc"
+          example: t_123abc
         created:
           type: string
           format: date-time
         variations:
           type: array
           items:
-            $ref: "#/components/schemas/SnapshotVariation"
+            $ref: '#/components/schemas/SnapshotVariation'
           example:
-          - variation: 0
-            samples: 1802
-            metrics:
-            - id: "m_123abc"
-              value: 0.23
-              enoughData: true
-          - variation: 1
-            samples: 1954
-            metrics:
-            - id: "m_123abc"
-              value: 0.25
-              enoughData: true
-              chanceToBeatBaseline: 0.82
-              confidenceLow: -0.03
-              confidenceHigh: 0.16
+            - variation: 0
+              samples: 1802
+              metrics:
+                - id: m_123abc
+                  value: 0.23
+                  enoughData: true
+            - variation: 1
+              samples: 1954
+              metrics:
+                - id: m_123abc
+                  value: 0.25
+                  enoughData: true
+                  chanceToBeatBaseline: 0.82
+                  confidenceLow: -0.03
+                  confidenceHigh: 0.16
     TestStatus:
       type: string
       enum:
@@ -425,13 +601,17 @@ components:
         - STOPPED
     Metric:
       type: object
+      required:
+        - id
+        - name
+        - type
       properties:
         id:
           type: string
-          example: "m_123abc"
+          example: m_123abc
         name:
           type: string
-          example: "Registered"
+          example: Registered
         type:
           type: string
           enum:
@@ -440,12 +620,18 @@ components:
             - NPS
     Variation:
       type: object
+      required:
+        - variation
+        - name
+        - weight
+        - active
+        - images
       properties:
         variation:
           type: integer
         name:
           type: string
-          example: "Baseline"
+          example: Baseline
         weight:
           type: number
           minimum: 0
@@ -457,10 +643,14 @@ components:
           type: array
           items:
             type: object
+            required:
+              - path
+              - width
+              - height
             properties:
               path:
                 type: string
-                example: "https://example.com/123abc.jpg"
+                example: 'https://example.com/123abc.jpg'
               width:
                 type: integer
                 example: 800
@@ -469,21 +659,31 @@ components:
                 example: 600
     TestSummary:
       type: object
+      required:
+        - id
+        - name
+        - status
+        - description
+        - hypothesis
+        - created_at
+        - updated_at
+        - started_at
+        - stopped_at
       properties:
         id:
           type: string
-          example: "t_123abc"
+          example: t_123abc
         name:
           type: string
-          example: "Button color test"
+          example: Button color test
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
           type: string
-          example: "Seeing if a green button performs better than a red button"
+          example: Seeing if a green button performs better than a red button
         hypothesis:
           type: string
-          example: "A green button will draw user's attention more and cause click-through to increase"
+          example: A green button will draw user's attention more and cause click-through to increase
         created_at:
           type: string
           format: date-time
@@ -498,24 +698,37 @@ components:
           format: date-time
     Test:
       type: object
+      required:
+        - id
+        - name
+        - status
+        - description
+        - hypothesis
+        - variations
+        - metrics
+        - results
+        - created_at
+        - updated_at
+        - started_at
+        - stopped_at
       properties:
-        id: 
+        id:
           type: string
-          example: "t_123abc"
+          example: t_123abc
         name:
           type: string
-          example: "Button color test"
+          example: Button color test
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
           type: string
-          example: "Seeing if a green button performs better than a red button"
+          example: Seeing if a green button performs better than a red button
         hypothesis:
           type: string
-          example: "A green button will draw user's attention more and cause click-through to increase"
+          example: A green button will draw user's attention more and cause click-through to increase
         variations:
           type: array
-          items: 
+          items:
             $ref: '#/components/schemas/Variation'
         metrics:
           type: array
@@ -523,13 +736,18 @@ components:
             $ref: '#/components/schemas/Metric'
         results:
           type: object
+          required:
+            - summary
+            - analysis
+            - outcome
+            - future_baseline
           properties:
             summary:
               type: string
-              example: "Green had a significantly higher CTR"
+              example: Green had a significantly higher CTR
             analysis:
               type: string
-              example: "Noticed a slight decrease in bounce rate as well, but not sure if related"
+              example: 'Noticed a slight decrease in bounce rate as well, but not sure if related'
             outcome:
               type: string
               enum:
@@ -539,7 +757,7 @@ components:
                 - DNF
             future_baseline:
               type: string
-              example: "Switching to green going forward"
+              example: Switching to green going forward
         created_at:
           type: string
           format: date-time
