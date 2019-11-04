@@ -1,0 +1,978 @@
+openapi: 3.0.0
+info:
+  title: AB Crusher API
+  version: 0.0.1
+servers:
+- url: /api/v1
+paths:
+  /tests:
+    get:
+      operationId: testsGET
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TestSummary'
+                type: array
+          description: A JSON array of TestSummary objects
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Returns a list of current and past tests
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+    post:
+      operationId: testsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Test'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+          description: Created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a new Test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+  /test/{testId}:
+    delete:
+      operationId: testTestIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: testId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          description: Deleted
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a Test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+    get:
+      operationId: testTestIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: testId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+          description: A single Test object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Return data for a single Test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+    put:
+      operationId: testTestIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: testId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Test'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+          description: A single Test object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a Test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+  /test/{testId}/snapshots:
+    get:
+      operationId: testTestIdSnapshotsGET
+      parameters:
+      - explode: false
+        in: path
+        name: testId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Snapshot'
+                type: array
+          description: An array of data snapshots
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Return data snapshots for a test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+    post:
+      operationId: testTestIdSnapshotsPOST
+      parameters:
+      - explode: false
+        in: path
+        name: testId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+          description: The snapshot created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a new snapshot for a test
+      tags:
+      - Tests
+      x-openapi-router-controller: TestsController
+      x-openapi-router-service: TestsService
+  /events:
+    get:
+      operationId: eventsGET
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Event'
+                type: array
+          description: An array of events
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Get a list of events
+      tags:
+      - Events
+      x-openapi-router-controller: EventsController
+      x-openapi-router-service: EventsService
+  /event/{eventId}:
+    get:
+      operationId: eventEventIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: eventId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: The event
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Get a single Event
+      tags:
+      - Events
+      x-openapi-router-controller: EventsController
+      x-openapi-router-service: EventsService
+  /metrics:
+    get:
+      operationId: metricsGET
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Metric'
+                type: array
+          description: A JSON array of Metric objects
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Returns a list of metrics
+      tags:
+      - Metrics
+      x-openapi-router-controller: MetricsController
+      x-openapi-router-service: MetricsService
+    post:
+      operationId: metricsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metric'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: Created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a new Metric
+      tags:
+      - Metrics
+      x-openapi-router-controller: MetricsController
+      x-openapi-router-service: MetricsService
+  /metric/{metricId}:
+    delete:
+      operationId: metricMetricIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          description: Deleted
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a Metric
+      tags:
+      - Metrics
+      x-openapi-router-controller: MetricsController
+      x-openapi-router-service: MetricsService
+    get:
+      operationId: metricMetricIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: A single Metric object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Return data for a single Metric
+      tags:
+      - Metrics
+      x-openapi-router-controller: MetricsController
+      x-openapi-router-service: MetricsService
+    put:
+      operationId: metricMetricIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: metricId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metric'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metric'
+          description: A single Metric object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a Metric
+      tags:
+      - Metrics
+      x-openapi-router-controller: MetricsController
+      x-openapi-router-service: MetricsService
+  /insights:
+    get:
+      operationId: insightsGET
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Insight'
+                type: array
+          description: A JSON array of Insight objects
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Returns a list of insights
+      tags:
+      - Insights
+      x-openapi-router-controller: InsightsController
+      x-openapi-router-service: InsightsService
+    post:
+      operationId: insightsPOST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insight'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+          description: Created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a new Insight
+      tags:
+      - Insights
+      x-openapi-router-controller: InsightsController
+      x-openapi-router-service: InsightsService
+  /insight/{insightId}:
+    delete:
+      operationId: insightInsightIdDELETE
+      parameters:
+      - explode: false
+        in: path
+        name: insightId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          description: Deleted
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a Insight
+      tags:
+      - Insights
+      x-openapi-router-controller: InsightsController
+      x-openapi-router-service: InsightsService
+    get:
+      operationId: insightInsightIdGET
+      parameters:
+      - explode: false
+        in: path
+        name: insightId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+          description: A single Insight object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Return data for a single Insight
+      tags:
+      - Insights
+      x-openapi-router-controller: InsightsController
+      x-openapi-router-service: InsightsService
+    put:
+      operationId: insightInsightIdPUT
+      parameters:
+      - explode: false
+        in: path
+        name: insightId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Insight'
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Insight'
+          description: A single Insight object
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a Insight
+      tags:
+      - Insights
+      x-openapi-router-controller: InsightsController
+      x-openapi-router-service: InsightsService
+components:
+  schemas:
+    Error:
+      properties:
+        type:
+          enum:
+          - invalid_request_error
+          - authentication_error
+          - api_error
+          - api_connection_error
+          - rate_limit_error
+          type: string
+        message:
+          example: An unknown error occurred
+          type: string
+        param:
+          example: some_param
+          type: string
+      required:
+      - message
+      - type
+      type: object
+    Insight:
+      example:
+        testIds:
+        - t_123abc
+        - t_123abc
+        insight: Green buttons get higher click throughs than Red buttons
+        votes: 0
+        id: i_123abc
+      properties:
+        id:
+          example: i_123abc
+          type: string
+        testIds:
+          items:
+            example: t_123abc
+            type: string
+          type: array
+        insight:
+          example: Green buttons get higher click throughs than Red buttons
+          type: string
+        votes:
+          type: integer
+      required:
+      - id
+      - insight
+      - testIds
+      - votes
+      type: object
+    Event:
+      example:
+        data:
+          previousProps:
+            type: BINOMIAL
+          newProps:
+            type: COUNT
+        event: metric.updated
+        user: u_123abc
+        objectId: m_123abc
+        timestamp: 2000-01-23T04:56:07.000+00:00
+      properties:
+        timestamp:
+          format: date-time
+          type: string
+        user:
+          example: u_123abc
+          type: string
+        event:
+          example: metric.updated
+          type: string
+        objectId:
+          example: m_123abc
+          type: string
+        data:
+          example:
+            previousProps:
+              type: BINOMIAL
+            newProps:
+              type: COUNT
+          type: object
+      required:
+      - event
+      - objectId
+      - timestamp
+      - user
+      type: object
+    SnapshotVariation:
+      properties:
+        variation:
+          type: integer
+        samples:
+          example: 800
+          type: integer
+        metrics:
+          items:
+            $ref: '#/components/schemas/SnapshotVariation_metrics'
+          type: array
+      required:
+      - metrics
+      - samples
+      - variation
+      type: object
+    Snapshot:
+      example:
+        created: 2000-01-23T04:56:07.000+00:00
+        variations:
+        - variation: 0
+          samples: 1802
+          metrics:
+          - id: m_123abc
+            value: 0.23
+            enoughData: true
+        - variation: 1
+          samples: 1954
+          metrics:
+          - id: m_123abc
+            value: 0.25
+            enoughData: true
+            chanceToBeatBaseline: 0.82
+            confidenceLow: -0.03
+            confidenceHigh: 0.16
+        testId: t_123abc
+        id: s_123abc
+      properties:
+        id:
+          example: s_123abc
+          type: string
+        testId:
+          example: t_123abc
+          type: string
+        created:
+          format: date-time
+          type: string
+        variations:
+          example:
+          - variation: 0
+            samples: 1802
+            metrics:
+            - id: m_123abc
+              value: 0.23
+              enoughData: true
+          - variation: 1
+            samples: 1954
+            metrics:
+            - id: m_123abc
+              value: 0.25
+              enoughData: true
+              chanceToBeatBaseline: 0.82
+              confidenceLow: -0.03
+              confidenceHigh: 0.16
+          items:
+            $ref: '#/components/schemas/SnapshotVariation'
+          type: array
+      required:
+      - created
+      - id
+      - testId
+      - variation
+      type: object
+    TestStatus:
+      enum:
+      - DRAFT
+      - PENDING
+      - RUNNING
+      - STOPPED
+      type: string
+    Metric:
+      example:
+        name: Registered
+        id: m_123abc
+        type: BINOMIAL
+      properties:
+        id:
+          example: m_123abc
+          type: string
+        name:
+          example: Registered
+          type: string
+        type:
+          enum:
+          - BINOMIAL
+          - COUNT
+          - NPS
+          type: string
+      required:
+      - id
+      - name
+      - type
+      type: object
+    Variation:
+      example:
+        images:
+        - path: https://example.com/123abc.jpg
+          width: 800
+          height: 600
+        - path: https://example.com/123abc.jpg
+          width: 800
+          height: 600
+        name: Baseline
+        weight: 0.5
+        active: true
+        variation: 0
+      properties:
+        variation:
+          type: integer
+        name:
+          example: Baseline
+          type: string
+        weight:
+          example: 0.5
+          maximum: 1
+          minimum: 0
+          type: number
+        active:
+          type: boolean
+        images:
+          items:
+            $ref: '#/components/schemas/Variation_images'
+          type: array
+      required:
+      - active
+      - images
+      - name
+      - variation
+      - weight
+      type: object
+    TestSummary:
+      example:
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        name: Button color test
+        description: Seeing if a green button performs better than a red button
+        created_at: 2000-01-23T04:56:07.000+00:00
+        started_at: 2000-01-23T04:56:07.000+00:00
+        id: t_123abc
+        stopped_at: 2000-01-23T04:56:07.000+00:00
+        hypothesis: A green button will draw user's attention more and cause click-through
+          to increase
+      properties:
+        id:
+          example: t_123abc
+          type: string
+        name:
+          example: Button color test
+          type: string
+        status:
+          $ref: '#/components/schemas/TestStatus'
+        description:
+          example: Seeing if a green button performs better than a red button
+          type: string
+        hypothesis:
+          example: A green button will draw user's attention more and cause click-through
+            to increase
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+        started_at:
+          format: date-time
+          type: string
+        stopped_at:
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - description
+      - hypothesis
+      - id
+      - name
+      - started_at
+      - status
+      - stopped_at
+      - updated_at
+      type: object
+    Test:
+      example:
+        updated_at: 2000-01-23T04:56:07.000+00:00
+        variations:
+        - images:
+          - path: https://example.com/123abc.jpg
+            width: 800
+            height: 600
+          - path: https://example.com/123abc.jpg
+            width: 800
+            height: 600
+          name: Baseline
+          weight: 0.5
+          active: true
+          variation: 0
+        - images:
+          - path: https://example.com/123abc.jpg
+            width: 800
+            height: 600
+          - path: https://example.com/123abc.jpg
+            width: 800
+            height: 600
+          name: Baseline
+          weight: 0.5
+          active: true
+          variation: 0
+        name: Button color test
+        description: Seeing if a green button performs better than a red button
+        created_at: 2000-01-23T04:56:07.000+00:00
+        started_at: 2000-01-23T04:56:07.000+00:00
+        id: t_123abc
+        metrics:
+        - name: Registered
+          id: m_123abc
+          type: BINOMIAL
+        - name: Registered
+          id: m_123abc
+          type: BINOMIAL
+        stopped_at: 2000-01-23T04:56:07.000+00:00
+        hypothesis: A green button will draw user's attention more and cause click-through
+          to increase
+        results:
+          summary: Green had a significantly higher CTR
+          analysis: Noticed a slight decrease in bounce rate as well, but not sure
+            if related
+          outcome: WIN
+          future_baseline: Switching to green going forward
+      properties:
+        id:
+          example: t_123abc
+          type: string
+        name:
+          example: Button color test
+          type: string
+        status:
+          $ref: '#/components/schemas/TestStatus'
+        description:
+          example: Seeing if a green button performs better than a red button
+          type: string
+        hypothesis:
+          example: A green button will draw user's attention more and cause click-through
+            to increase
+          type: string
+        variations:
+          items:
+            $ref: '#/components/schemas/Variation'
+          type: array
+        metrics:
+          items:
+            $ref: '#/components/schemas/Metric'
+          type: array
+        results:
+          $ref: '#/components/schemas/Test_results'
+        created_at:
+          format: date-time
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+        started_at:
+          format: date-time
+          type: string
+        stopped_at:
+          format: date-time
+          type: string
+      required:
+      - created_at
+      - description
+      - hypothesis
+      - id
+      - metrics
+      - name
+      - results
+      - started_at
+      - status
+      - stopped_at
+      - updated_at
+      - variations
+      type: object
+    SnapshotVariation_metrics:
+      properties:
+        id:
+          example: m_123abc
+          type: string
+        value:
+          example: 0.23
+          type: number
+        rawData:
+          type: object
+        chanceToBeatBaseline:
+          example: 0.82
+          maximum: 1
+          minimum: 0
+          type: number
+        enoughData:
+          type: boolean
+        confidenceLow:
+          example: -0.03
+          type: number
+        confidenceHigh:
+          example: 0.12
+          type: number
+      required:
+      - enoughData
+      - id
+      - value
+    Variation_images:
+      example:
+        path: https://example.com/123abc.jpg
+        width: 800
+        height: 600
+      properties:
+        path:
+          example: https://example.com/123abc.jpg
+          type: string
+        width:
+          example: 800
+          type: integer
+        height:
+          example: 600
+          type: integer
+      required:
+      - height
+      - path
+      - width
+    Test_results:
+      example:
+        summary: Green had a significantly higher CTR
+        analysis: Noticed a slight decrease in bounce rate as well, but not sure if
+          related
+        outcome: WIN
+        future_baseline: Switching to green going forward
+      properties:
+        summary:
+          example: Green had a significantly higher CTR
+          type: string
+        analysis:
+          example: Noticed a slight decrease in bounce rate as well, but not sure
+            if related
+          type: string
+        outcome:
+          enum:
+          - WIN
+          - LOSS
+          - DRAW
+          - DNF
+          type: string
+        future_baseline:
+          example: Switching to green going forward
+          type: string
+      required:
+      - analysis
+      - future_baseline
+      - outcome
+      - summary

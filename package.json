@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "mock": "prism mock ./openapi.yaml"
+    "mock": "prism mock ./openapi.yaml",
+    "gen:server": "openapi-generator generate -i openapi.yaml -g nodejs-express-server -o server"
   },
   "dependencies": {
     "core-js": "^3.3.2",
