@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/tests">Tests</router-link> |
-      <router-link to="/insights">Insights</router-link> |
-      <router-link to="/metrics">Metrics</router-link>
-    </div>
+    <TopNav />
     <router-view />
   </div>
 </template>
@@ -17,17 +13,14 @@
   text-align: center;
   color: #2c3e50;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>
+
+<script>
+import TopNav from "./components/TopNav";
+
+export default {
+  components: {
+    TopNav
+  }
+};
+</script>
