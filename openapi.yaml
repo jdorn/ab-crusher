@@ -684,6 +684,7 @@ components:
         - status
         - description
         - hypothesis
+        - variations
         - outcome
         - created_at
         - updated_at
@@ -704,6 +705,18 @@ components:
         hypothesis:
           type: string
           example: A green button will draw user's attention more and cause click-through to increase
+        variations:
+          type: array
+          items:
+            type: object
+            required:
+              - variation
+              - name
+            properties:
+              variation:
+                type: integer
+              name:
+                type: string
         outcome:
           type: string
           enum:
