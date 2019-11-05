@@ -13,13 +13,15 @@
             v-if="test.status === 'STOPPED'"
             :class="['outcome', test.outcome]"
           >
+            <span :class="['dot', test.outcome]"></span>
             {{ test.outcome }}
           </div>
           <div v-else :class="['status', test.status]">
+            <span :class="['dot', test.status]"></span>
             {{ test.status }}
           </div>
           <div class="started-at">
-            <span>{{ test.started_at | moment("dddd, MMMM Do YYYY") }}</span>
+            <span>{{ test.started_at | moment("MMM D YYYY") }}</span>
           </div>
         </div>
         <div class="name-and-desc">
@@ -27,9 +29,9 @@
           <div class="desc">{{ test.description }}</div>
         </div>
         <div class="groups"></div>
-        <div class="results">
+        <router-link :to="{ name: 'test', params: { id: test.id } }">
           Results
-        </div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -82,36 +84,68 @@ export default {
   align-items: center;
 }
 
+.dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .status {
   &.DRAFT {
     color: gray;
+    .dot {
+      background-color: gray;
+    }
   }
 
   &.PENDING {
     color: gray;
+    .dot {
+      background-color: gray;
+    }
   }
 
   &.RUNNING {
     color: #ffdb58;
+    .dot {
+      background-color: #ffdb58;
+    }
   }
 }
 
 .outcome {
   &.WIN {
     color: green;
+    .dot {
+      background-color: green;
+    }
   }
 
   &.LOSS {
     color: red;
+    .dot {
+      background-color: red;
+    }
   }
 
   &.DRAW {
     color: blue;
+    .dot {
+      background-color: blue;
+    }
   }
 
   &.DNF {
     color: gray;
+    .dot {
+      background-color: gray;
+    }
   }
+}
+
+.meta {
+  text-align: left;
 }
 
 .name-and-desc {
