@@ -37,57 +37,14 @@ export default {
   components: { Status, Variations },
   data() {
     return {
-      tests: [
-        {
-          id: "t-1",
-          name: "Button color test",
-          status: "RUNNING",
-          description:
-            "Seeing if a green button performs better than a red button",
-          hypothesis:
-            "A green button will draw user's attention more and cause click-through to increase",
-          variations: [
-            {
-              variation: 0,
-              name: "Red"
-            },
-            {
-              variation: 1,
-              name: "Green"
-            }
-          ],
-          outcome: "",
-          created_at: "2019-11-01T18:32:13Z",
-          updated_at: "2019-11-02T18:32:13Z",
-          started_at: "2019-11-03T18:32:13Z",
-          stopped_at: "2019-11-04T18:32:13Z"
-        },
-        {
-          id: "t-2",
-          name: "Button size test",
-          status: "STOPPED",
-          description:
-            "Seeing if a large button performs better than a smaller button",
-          hypothesis:
-            "A large button will draw a user's attention more and cause click-through to increase",
-          variations: [
-            {
-              variation: 0,
-              name: "Large"
-            },
-            {
-              variation: 1,
-              name: "Small"
-            }
-          ],
-          outcome: "WIN",
-          created_at: "2019-10-01T18:32:13Z",
-          updated_at: "2019-10-02T18:32:13Z",
-          started_at: "2019-10-03T18:32:13Z",
-          stopped_at: "2019-10-04T18:32:13Z"
-        }
-      ]
+      tests: []
     };
+  },
+  mounted() {
+    const baseURI = "http://127.0.0.1:4010/tests";
+    this.$http.get(baseURI).then(result => {
+      this.tests = result.data;
+    });
   }
 };
 </script>
