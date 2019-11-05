@@ -684,6 +684,7 @@ components:
         - status
         - description
         - hypothesis
+        - outcome
         - created_at
         - updated_at
         - started_at
@@ -703,6 +704,13 @@ components:
         hypothesis:
           type: string
           example: A green button will draw user's attention more and cause click-through to increase
+        outcome:
+          type: string
+          enum:
+            - WIN
+            - LOSS
+            - DRAW
+            - DNF
         created_at:
           type: string
           format: date-time
