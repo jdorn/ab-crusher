@@ -18,8 +18,9 @@
         <div class="started-at">
           <span>{{ startedAt | moment("MMM D YYYY") }}</span>
         </div>
-        <div  class="runtime">
-          Running for {{ $moment(stoppedAt).diff(startedAt) | moment("D") }} days
+        <div class="runtime">
+          Running for
+          {{ $moment(stoppedAt).diff(startedAt) | moment("D") }} days
         </div>
       </div>
     </div>
@@ -28,7 +29,7 @@
 
 <script>
 export default {
-  name: "TestStatus",
+  name: "Status",
   props: [
     "status",
     "outcome",
