@@ -1,5 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
+import axios from "axios";
 import "./registerServiceWorker";
 import router from "./router";
 
@@ -11,3 +12,4 @@ new Vue({
 }).$mount("#app");
 
 Vue.use(require("vue-moment"));
+Vue.prototype.$http = axios;
