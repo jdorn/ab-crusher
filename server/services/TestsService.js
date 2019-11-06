@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 const Service = require("./Service");
+const Test = require('../models/Test');
 
 class TestsService {
   /**
@@ -29,7 +30,11 @@ class TestsService {
   static testTestIdGET({ testId }) {
     return new Promise(async resolve => {
       try {
-        resolve(Service.successResponse(""));
+        var payload = Test.model.find({id: testId}, function (err, test){
+          if(err) return {err:true};
+          else return {err:false};
+        });
+        resolve(Service.successResponse(payload));
       } catch (e) {
         resolve(
           Service.rejectResponse(e.message || "Invalid input", e.status || 405)

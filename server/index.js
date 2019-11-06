@@ -1,6 +1,9 @@
+// import models, { connectDb } from './models';
+
 const config = require('./config');
 const logger = require('./logger');
 const ExpressServer = require('./expressServer');
+const models = require('./models');
 // const App = require('./app');
 
 // const app = new App(config);
@@ -14,15 +17,20 @@ const ExpressServer = require('./expressServer');
 //       .catch(closeError => logger.error(closeError))
 //       .finally(() => logger.error(error));
 //   });
+models.connectDb();
 const launchServer = async () => {
   try {
     this.expressServer = new ExpressServer(config.URL_PORT, config.OPENAPI_YAML);
     await this.expressServer.launch();
     logger.info('Express server running');
+
   } catch (error) {
     logger.error(error);
     await this.close();
   }
 };
 
-launchServer().catch(e => logger.error(e));
+// models.connectDb().then( async () => {
+        launchServer().catch(e => logger.error(e));
+    // }
+// );

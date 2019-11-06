@@ -1,0 +1,28 @@
+const TestStatus = require('./TestStatus');
+
+const mongoose = require('mongoose');
+
+const schema = new mongoose.Schema(
+    {
+        id: String,
+        name: String,
+        status: TestStatus.schema,
+        description: String,
+        hypothesis: String,
+        variations: [
+            {
+                variation: Number,
+                name: String
+            }
+        ],
+        outcome: String,
+        created_at: String,
+        format: String,
+        updated_at: String,
+        started_at: String,
+        stopped_at: String
+    }
+);
+
+const model = mongoose.model('TestSummary', schema);
+module.exports = { schema, model };
