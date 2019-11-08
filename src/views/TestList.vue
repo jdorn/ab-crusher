@@ -1,30 +1,44 @@
 <template>
-  <div class="test-list">
-    <h1>List of Tests</h1>
-    <div class="tests">
-      <div
-        class="test"
-        v-for="test in tests"
-        :value="test.value"
-        :key="test.value"
-      >
-        <Status
-          :status="test.status"
-          :outcome="test.outcome"
-          :createdAt="test.created_at"
-          :updatedAt="test.updated_at"
-          :startedAt="test.started_at"
-          :finishedAt="test.stopped_at"
-        />
-        <div class="name-and-desc">
-          <div class="name">{{ test.name }}</div>
-          <div class="desc">{{ test.description }}</div>
-        </div>
-        <Variations :variations="test.variations" />
-        <router-link :to="{ name: 'test', params: { id: test.id } }">
-          Results
-        </router-link>
-      </div>
+  <div>
+    <TopNav />
+    <div class="test-list">
+      <h1>All Tests</h1>
+      <table class="list">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Test</th>
+            <th>Variations</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="test in tests" :key="test.id">
+            <td>
+              <Status
+                :status="test.status"
+                :outcome="test.outcome"
+                :createdAt="test.created_at"
+                :updatedAt="test.updated_at"
+                :startedAt="test.started_at"
+                :finishedAt="test.stopped_at"
+              />
+            </td>
+            <td>
+              <div class="name">{{ test.name }}</div>
+              <div class="desc">{{ test.hypothesis }}</div>
+            </td>
+            <td>
+              <Variations :variations="test.variations" />
+            </td>
+            <td>
+              <router-link :to="{ name: 'test', params: { id: test.id } }">
+                View
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -32,9 +46,11 @@
 <script>
 import Status from "../components/TestList/Status";
 import Variations from "../components/TestList/Variations";
+import TopNav from "../components/TopNav";
+
 export default {
   name: "TestList.vue",
-  components: { Status, Variations },
+  components: { Status, Variations, TopNav },
   data() {
     return {
       tests: []
@@ -50,81 +66,31 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.test {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.dot {
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.status {
-  &.DRAFT {
-    color: gray;
-    .dot {
-      background-color: gray;
-    }
-  }
-
-  &.PENDING {
-    color: gray;
-    .dot {
-      background-color: gray;
-    }
-  }
-
-  &.RUNNING {
-    color: #ffdb58;
-    .dot {
-      background-color: #ffdb58;
-    }
-  }
-}
-
-.outcome {
-  &.WIN {
-    color: green;
-    .dot {
-      background-color: green;
-    }
-  }
-
-  &.LOSS {
-    color: red;
-    .dot {
-      background-color: red;
-    }
-  }
-
-  &.DRAW {
-    color: blue;
-    .dot {
-      background-color: blue;
-    }
-  }
-
-  &.DNF {
-    color: gray;
-    .dot {
-      background-color: gray;
-    }
-  }
-}
-
-.meta {
+.test-list {
   text-align: left;
-}
-
-.name-and-desc {
-  text-align: left;
+  padding: 10px;
 }
 
 .name {
-  font-size: x-large;
+  font-size: 1.4em;
+  margin-bottom: 5px;
+}
+.desc {
+  font-size: 0.9em;
+}
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  td,
+  th {
+    border: 1px solid #f0f0f0;
+    padding: 15px;
+    margin: 0;
+    vertical-align: top;
+  }
+  th {
+    background: #f5f5f5;
+  }
 }
 </style>

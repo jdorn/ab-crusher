@@ -18,4 +18,14 @@ export default {
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+ul {
+  padding: 0 0 0 10px;
+  margin: 0;
+
+  li {
+    padding: 0;
+    margin: 0 0 5px 0;
+  }
+}
+</style>
