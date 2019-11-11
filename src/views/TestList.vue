@@ -57,7 +57,7 @@ export default {
     };
   },
   mounted() {
-    const baseURI = "http://127.0.0.1:4010/tests";
+    const baseURI = process.env.VUE_APP_API_ENDPOINT + "/tests";
     this.$http.get(baseURI).then(result => {
       this.tests = result.data;
     });

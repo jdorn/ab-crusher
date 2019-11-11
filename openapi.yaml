@@ -19,37 +19,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TestSummary'
-                example:
-                  - id: t-1
-                    name: Button color test
-                    status: RUNNING
-                    description: Seeing if a green button performs better than a red button
-                    hypothesis: A green button will draw user's attention more and cause click-through to increase
-                    variations:
-                      - variation: 0
-                        name: Red
-                      - variation: 1
-                        name: Green
-                    outcome: ""
-                    created_at: 2019-11-01T18:32:13Z
-                    updated_at: 2019-11-02T18:32:13Z
-                    started_at: 2019-11-03T18:32:13Z
-                    stopped_at: 2019-11-04T18:32:13Z
-                  - id: t-2
-                    name: Button size test
-                    status: STOPPED
-                    description: Seeing if a large button performs better than a smaller button
-                    hypothesis: A large button will draw a users attention more and cause click-through to increase
-                    variations:
-                      - variation: 0
-                        name: Large
-                      - variation: 1
-                        name: Small
-                    outcome: WIN
-                    created_at: 2019-10-01T18:32:13Z
-                    updated_at: 2019-10-02T18:32:13Z
-                    started_at: 2019-10-03T18:32:13Z
-                    stopped_at: 2019-10-04T18:32:13Z
         default:
           description: Unexpected error
           content:
@@ -244,121 +213,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /metrics:
-    get:
-      summary: Returns a list of metrics
-      tags:
-        - Metrics
-      responses:
-        '200':
-          description: A JSON array of Metric objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Metric'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    post:
-      summary: Create a new Metric
-      tags:
-        - Metrics
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Metric'
-      responses:
-        '200':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Metric'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  '/metric/{metricId}':
-    get:
-      summary: Return data for a single Metric
-      tags:
-        - Metrics
-      parameters:
-        - in: path
-          name: metricId
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: A single Metric object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Metric'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    put:
-      summary: Update a Metric
-      tags:
-        - Metrics
-      parameters:
-        - in: path
-          name: metricId
-          schema:
-            type: string
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Metric'
-      responses:
-        '200':
-          description: A single Metric object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Metric'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-    delete:
-      summary: Delete a Metric
-      tags:
-        - Metrics
-      parameters:
-        - in: path
-          name: metricId
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Deleted
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /insights:
     get:
       summary: Returns a list of insights
@@ -500,18 +354,28 @@ components:
       type: object
       required:
         - id
-        - testIds
         - insight
+        - links
         - votes
       properties:
         id:
           type: string
           example: i_123abc
-        testIds:
+        links:
           type: array
           items:
-            type: string
-            example: t_123abc
+            type: object
+            required:
+              - display
+              - url
+            properties:
+              display:
+                type: string
+                example: "Signup Button Color"
+              url:
+                type: string
+                format: uri
+                example: "/test/t_123abc"
         insight:
           type: string
           example: Green buttons get higher click throughs than Red buttons
@@ -533,17 +397,33 @@ components:
           example: u_123abc
         event:
           type: string
-          example: metric.updated
+          example: insight.updated
         objectId:
           type: string
-          example: m_123abc
+          example: i_123abc
         data:
           type: object
           example:
             previousProps:
-              type: BINOMIAL
+              insight: This was the old insight
             newProps:
-              type: COUNT
+              insight: This is the new insight
+    Metric:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          example: "Clicks"
+        type:
+          type: string
+          enum:
+            - BINOMIAL
+            - NORMAL
+            - POISSON
+            - NPS
     SnapshotVariation:
       type: object
       required:
@@ -556,43 +436,35 @@ components:
         samples:
           type: integer
           example: 800
-        metrics:
-          type: array
-          items:
-            type: object
-            required:
-              - id
-              - value
-              - enoughData
-            properties:
-              id:
-                type: string
-                example: m_123abc
-              value:
-                type: number
-                example: 0.23
-              rawData:
-                type: object
-              chanceToBeatBaseline:
-                type: number
-                minimum: 0
-                maximum: 1
-                example: 0.82
-              enoughData:
-                type: boolean
-              confidenceLow:
-                type: number
-                example: -0.03
-              confidenceHigh:
-                type: number
-                example: 0.12
+        requiredSamples:
+          type: integer
+          example: 1200
+        data:
+          type: object
+          required:
+            - value
+            - enoughData
+          properties:
+            value:
+              type: number
+              example: 0.23
+            rawData:
+              type: object
+            enoughData:
+              type: boolean
+            confidenceLow:
+              type: number
+              example: -0.03
+            confidenceHigh:
+              type: number
+              example: 0.12
     Snapshot:
       type: object
       required:
         - id
         - testId
         - created
-        - variation
+        - metrics
       properties:
         id:
           type: string
@@ -603,52 +475,50 @@ components:
         created:
           type: string
           format: date-time
-        variations:
+        metrics:
           type: array
           items:
-            $ref: '#/components/schemas/SnapshotVariation'
-          example:
-            - variation: 0
-              samples: 1802
-              metrics:
-                - id: m_123abc
-                  value: 0.23
-                  enoughData: true
-            - variation: 1
-              samples: 1954
-              metrics:
-                - id: m_123abc
-                  value: 0.25
-                  enoughData: true
-                  chanceToBeatBaseline: 0.82
-                  confidenceLow: -0.03
-                  confidenceHigh: 0.16
+            type: object
+            required:
+              - metric
+              - variations
+            properties:
+              metric:
+                $ref: '#/components/schemas/Metric'
+              variations:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnapshotVariation'
+                example:
+                  - variation: 0
+                    samples: 1002
+                    requiredSamples: 1600
+                    data:
+                      value: 0.23
+                      enoughData: true
+                  - variation: 1
+                    samples: 1025
+                    requiredSamples: 1400
+                    data:
+                      value: 0.25
+                      enoughData: true
+                      confidenceLow: -0.03
+                      confidenceHigh: 0.12
+                  - variation: 2
+                    samples: 905
+                    requiredSamples: 1500
+                    data:
+                      value: 0.24
+                      enoughData: false
+                      confidenceLow: -0.16
+                      confidenceHigh: 0.18
     TestStatus:
       type: string
       enum:
+        - RUNNING
         - DRAFT
         - PENDING
-        - RUNNING
         - STOPPED
-    Metric:
-      type: object
-      required:
-        - id
-        - name
-        - type
-      properties:
-        id:
-          type: string
-          example: m_123abc
-        name:
-          type: string
-          example: Registered
-        type:
-          type: string
-          enum:
-            - BINOMIAL
-            - COUNT
-            - NPS
     Variation:
       type: object
       required:
@@ -681,7 +551,7 @@ components:
             properties:
               path:
                 type: string
-                example: 'https://example.com/123abc.jpg'
+                example: '/img/screenshots/pricing-button-baseline.png'
               width:
                 type: integer
                 example: 800
@@ -708,7 +578,7 @@ components:
           example: t_123abc
         name:
           type: string
-          example: Button color test
+          example: Signup Button Color
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
@@ -729,6 +599,13 @@ components:
                 type: integer
               name:
                 type: string
+          example:
+            - variation: 0
+              name: Baseline
+            - variation: 1
+              name: Green Buttons
+            - variation: 2
+              name: Blue Buttons
         outcome:
           type: string
           enum:
@@ -769,7 +646,7 @@ components:
           example: t_123abc
         name:
           type: string
-          example: Button color test
+          example: Signup Button Color
         status:
           $ref: '#/components/schemas/TestStatus'
         description:
@@ -782,6 +659,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Variation'
+          example:
+            - variation: 0
+              name: Baseline
+              weight: 0.34
+              active: true
+              images:
+                - path: /img/screenshots/pricing-button-baseline.png
+                  width: 1047
+                  height: 577
+            - variation: 1
+              name: Green Buttons
+              weight: 0.33
+              active: true
+              images:
+                - path: /img/screenshots/pricing-button-green.png
+                  width: 1041
+                  height: 577
+            - variation: 1
+              name: Blue Buttons
+              weight: 0.33
+              active: true
+              images:
+                - path: /img/screenshots/pricing-button-blue.png
+                  width: 1033
+                  height: 567
         metrics:
           type: array
           items:
@@ -813,6 +715,7 @@ components:
         created_at:
           type: string
           format: date-time
+          example: 2019-11-06T00:00:00Z
         updated_at:
           type: string
           format: date-time

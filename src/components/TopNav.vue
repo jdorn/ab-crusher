@@ -7,7 +7,7 @@
     <div class="links">
       <router-link to="/tests">Tests</router-link>
       <router-link to="/insights">Insights</router-link>
-      <router-link to="/metrics">Metrics</router-link>
+      <router-link to="/present?testIds=t_123abc">Present</router-link>
     </div>
   </nav>
 </template>

@@ -5,12 +5,17 @@
       <div class="info">
         <h1>{{ test.name }}</h1>
         <p>
-          Started: 11/7/2019
+          Started:
+          {{ test.created_at | moment("MMM Do, YYYY \\a\\t h:mm a") }}
         </p>
         <h3>Variations</h3>
         <div class="screenshots">
-          <div class="variation" v-for="(variation, i) in variations" :key="i">
-            <img :src="variation.screenshot" />
+          <div
+            class="variation"
+            v-for="(variation, i) in test.variations"
+            :key="i"
+          >
+            <img :src="variation.images[0].path" />
             <p>
               <i>{{ variation.name }}</i>
             </p>
@@ -18,8 +23,12 @@
         </div>
       </div>
       <div class="metrics">
-        <div class="metric" v-for="metric in metrics" :key="metric.name">
-          <h3>{{ metric.name }}</h3>
+        <div
+          class="metric"
+          v-for="metric in snapshot.metrics"
+          :key="metric.metric.name"
+        >
+          <h3>{{ metric.metric.name }}</h3>
           <table>
             <thead>
               <tr>
@@ -32,10 +41,11 @@
             <tbody>
               <tr v-for="(variation, i) in metric.variations" :key="i">
                 <td>
-                  {{ variations[i].name }}
+                  {{ test.variations[i].name }}
                 </td>
                 <td>
-                  {{ variation.conversions }} / {{ variations[i].samples }}
+                  {{ Math.floor(variation.data.value * variation.samples) }} /
+                  {{ variation.samples }}
                 </td>
                 <td>
                   <div class="chart-holder" v-if="i > 0">
@@ -44,18 +54,22 @@
                     <div
                       class="line-holder"
                       :style="{
-                        left: (variation.ci[0] / 0.4 + 0.5) * 100 + '%',
-                        right: ((0.2 - variation.ci[1]) / 0.4) * 100 + '%'
+                        left:
+                          (variation.data.confidenceLow / 0.4 + 0.5) * 100 +
+                          '%',
+                        right:
+                          ((0.2 - variation.data.confidenceHigh) / 0.4) * 100 +
+                          '%'
                       }"
                     >
                       <div class="line"></div>
                       <div class="marker left"></div>
                       <div class="marker right"></div>
                       <div class="ci low">
-                        {{ (variation.ci[0] * 100).toFixed(1) }}%
+                        {{ (variation.data.confidenceLow * 100).toFixed(1) }}%
                       </div>
                       <div class="ci high">
-                        {{ (variation.ci[1] * 100).toFixed(1) }}%
+                        {{ (variation.data.confidenceHigh * 100).toFixed(1) }}%
                       </div>
                     </div>
                   </div>
@@ -66,12 +80,21 @@
                       <div
                         class="bar"
                         :style="{
-                          width: variation.percentCompleted * 100 + '%'
+                          width:
+                            (variation.samples / variation.requiredSamples) *
+                              100 +
+                            '%'
                         }"
                       ></div>
                     </div>
                     <div class="estimate" v-if="i > 0">
-                      {{ variation.remaining }}
+                      ~{{
+                        ((1 / (variation.samples / variation.requiredSamples) -
+                          1) *
+                          (new Date().getTime() -
+                            new Date(test.created_at).getTime()))
+                          | duration("humanize")
+                      }}
                     </div>
                   </div>
                 </td>
@@ -87,6 +110,7 @@
 <style lang="less">
 .test-results {
   text-align: left;
+  padding-bottom: 100px;
 
   .info {
     background: #f2f2f2;
@@ -252,70 +276,23 @@ export default {
   },
   data: () => {
     return {
-      test: {
-        name: "Signup Button Color"
-      },
-      variations: [
-        {
-          name: "Baseline",
-          samples: 1002,
-          screenshot: "/img/screenshots/pricing-button-baseline.png"
-        },
-        {
-          name: "Green Button",
-          samples: 1025,
-          screenshot: "/img/screenshots/pricing-button-green.png"
-        },
-        {
-          name: "Blue Button",
-          samples: 1019,
-          screenshot: "/img/screenshots/pricing-button-blue.png"
-        }
-      ],
-      metrics: [
-        {
-          name: "Clicks",
-          variations: [
-            {
-              conversions: 851
-            },
-            {
-              conversions: 890,
-              ci: [-0.03123, 0.08543],
-              percentCompleted: 0.8,
-              remaining: "~2 hours remaining"
-            },
-            {
-              conversions: 812,
-              ci: [-0.08123, 0.01543],
-              percentCompleted: 0.9,
-              remaining: "~1 hour remaining"
-            }
-          ]
-        },
-
-        {
-          name: "Purchases",
-          variations: [
-            {
-              conversions: 105
-            },
-            {
-              conversions: 120,
-              ci: [-0.11123, 0.13543],
-              percentCompleted: 0.4,
-              remaining: "~3 days remaining"
-            },
-            {
-              conversions: 140,
-              ci: [-0.06123, 0.18543],
-              percentCompleted: 0.5,
-              remaining: "~2.5 days remaining"
-            }
-          ]
-        }
-      ]
+      test: {},
+      snapshot: {}
     };
+  },
+  props: {
+    id: String
+  },
+  mounted() {
+    const baseURI = process.env.VUE_APP_API_ENDPOINT + "/test/" + this.id;
+    this.$http.get(baseURI).then(result => {
+      this.test = result.data;
+    });
+
+    this.$http.get(baseURI + "/snapshots").then(result => {
+      this.snapshot = result.data[0];
+      console.log("snapshot", JSON.parse(JSON.stringify(this.snapshot)));
+    });
   }
 };
 </script>
