@@ -15,10 +15,11 @@
             v-for="(variation, i) in test.variations"
             :key="i"
           >
-            <img :src="variation.images[0].path" />
             <p>
               <i>{{ variation.name }}</i>
             </p>
+            <img :src="variation.images[0].path" />
+            <image-upload :test-id="test.id" :variation="i"></image-upload>
           </div>
         </div>
       </div>
@@ -270,8 +271,10 @@
 
 <script>
 import TopNav from "../components/TopNav";
+import ImageUpload from "../components/ImageUpload";
 export default {
   components: {
+    ImageUpload,
     TopNav
   },
   data: () => {

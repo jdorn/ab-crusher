@@ -120,6 +120,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  '/test/{testId}/{variation}/screenshot':
+    post:
+      summary: Upload a screenshot of a test variation
+      tags:
+        - Tests
+      parameters:
+        - in: path
+          name: testId
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: variation
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: The path of the uploaded file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  path:
+                    type: string
+                    format: uri
+
   '/test/{testId}/snapshots':
     get:
       summary: Return data snapshots for a test
