@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "mock": "prism mock ./openapi.yaml",
-    "gen:server": "openapi-generator generate -i openapi.yaml -g nodejs-express-server -o server"
+    "gen:server": "openapi-generator generate -i openapi.yaml -g nodejs-express-server -o server",
+    "gen:slim": "openapi-generator generate -i openapi.yaml -g php-slim4 -o server2"
   },
   "dependencies": {
     "axios": "^0.19.0",

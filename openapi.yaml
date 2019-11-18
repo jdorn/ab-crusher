@@ -3,11 +3,15 @@ info:
   title: AB Crusher API
   version: 0.0.1
 servers:
-  - url: /api/v1
+  - url: '{server}/api/v1'
+    variables:
+      server:
+        default: http://localhost
 paths:
   /tests:
     get:
       summary: Returns a list of current and past tests
+      operationId: getTests
       tags:
         - Tests
       responses:
@@ -27,6 +31,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Create a new Test
+      operationId: createTest
       tags:
         - Tests
       requestBody:
@@ -51,6 +56,7 @@ paths:
   '/test/{testId}':
     get:
       summary: Return data for a single Test
+      operationId: getTest
       tags:
         - Tests
       parameters:
@@ -74,6 +80,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Update a Test
+      operationId: updateTest
       tags:
         - Tests
       parameters:
@@ -103,6 +110,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a Test
+      operationId: deleteTest
       tags:
         - Tests
       parameters:
@@ -123,6 +131,7 @@ paths:
   '/test/{testId}/{variation}/screenshot':
     post:
       summary: Upload a screenshot of a test variation
+      operationId: uploadScreenshot
       tags:
         - Tests
       parameters:
@@ -148,7 +157,7 @@ paths:
                   format: binary
       responses:
         '200':
-          description: The path of the uploaded file
+          description: The path of the uploaded image
           content:
             application/json:
               schema:
@@ -156,11 +165,17 @@ paths:
                 properties:
                   path:
                     type: string
-                    format: uri
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   '/test/{testId}/snapshots':
     get:
       summary: Return data snapshots for a test
+      operationId: getSnapshots
       tags:
         - Tests
       parameters:
@@ -186,6 +201,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Create a new snapshot for a test
+      operationId: createSnapshot
       tags:
         - Tests
       parameters:
@@ -210,6 +226,7 @@ paths:
   /events:
     get:
       summary: Get a list of events
+      operationId: getEvents
       tags:
         - Events
       responses:
@@ -230,6 +247,7 @@ paths:
   '/event/{eventId}':
     get:
       summary: Get a single Event
+      operationId: getEvent
       tags:
         - Events
       parameters:
@@ -254,6 +272,7 @@ paths:
   /insights:
     get:
       summary: Returns a list of insights
+      operationId: getInsights
       tags:
         - Insights
       responses:
@@ -273,6 +292,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     post:
       summary: Create a new Insight
+      operationId: createInsight
       tags:
         - Insights
       requestBody:
@@ -297,6 +317,7 @@ paths:
   '/insight/{insightId}':
     get:
       summary: Return data for a single Insight
+      operationId: getInsight
       tags:
         - Insights
       parameters:
@@ -320,6 +341,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     put:
       summary: Update a Insight
+      operationId: updateInsight
       tags:
         - Insights
       parameters:
@@ -349,6 +371,7 @@ paths:
                 $ref: '#/components/schemas/Error'
     delete:
       summary: Delete a Insight
+      operationId: deleteInsight
       tags:
         - Insights
       parameters:

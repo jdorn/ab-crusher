@@ -1,71 +1,168 @@
-# OpenAPI Generated JavaScript/Express Server
+# php-base - PHP Slim 4 Server library for AB Crusher API
 
-## Overview
-This server was generated using the [OpenAPI Generator](https://openapi-generator.tech) project.  The code generator, and it's generated code allows you to develop your system with an API-First attitude, where the API contract is the anchor and definer of your project, and your code and business-logic aims to complete and comply to the terms in the API contract.
+* [OpenAPI Generator](https://openapi-generator.tech)
+* [Slim 4 Documentation](https://www.slimframework.com/docs/v4/)
 
-### prerequisites
-- NodeJS >= 10.4
-- NPM >= 6.10.0
+This server has been generated with [Slim PSR-7](https://github.com/slimphp/Slim-Psr7) implementation.
 
-The code was written on a mac, so assuming all should work smoothly on Linux-based computers. However, there is no reason not to run this library on Windows-based machines. If you find an OS-related problem, please open an issue and it will be resolved.
+## Requirements
 
-### Running the server  
-To run the server, run:  
-  
-```  
-npm start  
+* Web server with URL rewriting
+* PHP 7.1 or newer
+
+This package contains `.htaccess` for Apache configuration.
+If you use another server(Nginx, HHVM, IIS, lighttpd) check out [Web Servers](https://www.slimframework.com/docs/v3/start/web-servers.html) doc.
+
+## Installation via [Composer](https://getcomposer.org/)
+
+Navigate into your project's root directory and execute the bash command shown below.
+This command downloads the Slim Framework and its third-party dependencies into your project's `vendor/` directory.
+```bash
+$ composer install
 ```
-### View and test the API
-You can see the API documentation, and check the available endpoints by going to http://localhost:3000/api-docs/.  Endpoints that require security need to have security handlers configured before they can return a successful response. At this point they will return [ a response code of 401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401).
-##### At this stage the server does not support document body sent in xml format. Forms will be supported in the near future. 
 
-### Node version and guidelines 
-The code was written using Node version 10.6, and complies to the [Airbnb .eslint guiding rules](https://github.com/airbnb/javascript). 
+## Start devserver
 
-### Project Files
-#### Root Directory:
-In the root directory we have (besides package.json, config.js, and log files):
-- **logger.js** - where we define the logger for the project. The project uses winston, but the purpose of this file is to enable users to change and modify their own logger behavior.
-- **index.js** - This is the project's 'main' file, and from here we launch the application. This is a very short and concise file, and the idea behind launching from this short file is to allow use-cases of launching the server with different parameters (changing config and/or logger) without affecting the rest of the code. 
-- **expressServer.js** - The core of the Express.js server. This is where the express server is initialized, together with the OpenAPI validator, OpenAPI UI, and other libraries needed to start our server. If we want to add external links, that's where they would go. Our project uses the [express-openapi-validator](https://www.npmjs.com/package/express-openapi-validator) library that acts as a first step in the routing process - requests that are directed to paths defined in the `openapi.yaml` file are caught by this process, and it's parameters and bodyContent are validated against the schema. A successful result of this validation will be a new 'openapi' object added to the request. If the path requested is not part of the openapi.yaml file, the validator ignores the request and passes it on, as is, down the flow of the Express server.
+Run the following command in terminal to start localhost web server, assuming `./php-slim-server/` is public-accessible directory with `index.php` file:
+```bash
+$ php -S localhost:8888 -t php-slim-server
+```
+> **Warning** This web server was designed to aid application development.
+> It may also be useful for testing purposes or for application demonstrations that are run in controlled environments.
+> It is not intended to be a full-featured web server. It should not be used on a public network.
 
-#### api/
-- **openapi.yaml** - This is the OpenAPI contract to which this server will comply. The file was generated using the codegen, and should contain everything needed to run the API Gateway - no references to external models/schemas. 
+## Tests
 
-#### utils/
-Currently a single file:
+### PHPUnit
 
-- **openapiRouter.js** - This is where the routing to our back-end code happens. If the request object includes an ```openapi``` object, it picks up the following values (that are part of the ```openapi.yaml``` file): 'x-openapi-router-controller', and 'x-openapi-router-service'. These variables are names of files/classes in the controllers and services directories respectively. The operationId of the request is also extracted. The operationId is a method in the controller and the service that was generated as part of the codegen process. The routing process sends the request and response objects to the controller, which will extract the expected variables from the request, and send it to be processed by the service, returning the response from the service to the caller.
+This package uses PHPUnit 6 or 7(depends from your PHP version) for unit testing.
+[Test folder](test) contains templates which you can fill with real test assertions.
+How to write tests read at [PHPUnit Manual - Chapter 2. Writing Tests for PHPUnit](https://phpunit.de/manual/6.5/en/writing-tests-for-phpunit.html).
 
-#### controllers/
-After validating the request, and ensuring this belongs to our API gateway, we send the request to a `controller`, where the variables and parameters are extracted from the request and sent to the relevant `service` for processing. The `controller` handles the response from the `service` and builds the appropriate HTTP response to be sent back to the user. 
+#### Run
 
-- **index.js** - load all the controllers that were generated for this project, and export them to be used dynamically by the `openapiRouter.js`. If you would like to customize your controller, it is advised that you link to your controller here, and ensure that the codegen does not rewrite this file.
+Command | Target
+---- | ----
+`$ composer test` | All tests
+`$ composer test-apis` | Apis tests
+`$ composer test-models` | Models tests
 
-- **Controller.js** - The core processor of the generated controllers. The generated controllers are designed to be as slim and generic as possible, referencing to the `Controller.js` for the business logic of parsing the needed variables and arguments from the request, and for building the HTTP response which will be sent back. The `Controller.js` is a class with static methods. 
+#### Config
 
-- **{{x-openapi-router-controller}}.js** - auto-generated code, processing all the operations. The Controller is a class that is constructed with the service class it will be sending the request to. Every request defined by the `openapi.yaml`  has an operationId. The operationId is the name of the method that will be called. Every method receives the request and response, and calls the `Controller.js` to process the request and response, adding the service method that should be called for the actual business-logic processing.
+Package contains fully functional config `./phpunit.xml.dist` file. Create `./phpunit.xml` in root folder to override it.
 
-#### services/
-This is where the API Gateway ends, and the unique business-logic of your application kicks in. Every endpoint in the `openapi.yaml` has a variable 'x-openapi-router-service', which is the name of the service class that is generated. The operationID of the endpoint is the name of the method that will be called. The generated code provides a simple promise with a try/catch clause. A successful operation ends with a call to the generic `Service.js` to build a successful response (payload and response code), and a failure will call the generic `Service.js` to build a response with an error object and the relevant response code. It is recommended to have the services be generated automatically once, and after the initial build add methods manually.
+Quote from [3. The Command-Line Test Runner — PHPUnit 7.4 Manual](https://phpunit.readthedocs.io/en/7.4/textui.html#command-line-options):
 
-- **index.js** - load all the services that were generated for this project, and export them to be used dynamically by the `openapiRouter.js`. If you would like to customize your service, it is advised that you link to your controller here, and ensure that the codegen does not rewrite this file.
+> If phpunit.xml or phpunit.xml.dist (in that order) exist in the current working directory and --configuration is not used, the configuration will be automatically read from that file.
 
-- **Service.js** - A utility class, very simple and thin at this point, with two static methods for building a response object for successful and failed results in the service operation. The default response code is 200 for success and 500 for failure. It is recommended to send more accurate response codes and override these defaults when relevant.
+### PHP CodeSniffer
 
-- **{{x-openapi-router-service}}.js** - auto-generated code, providing a stub Promise for each operationId defined in the `openapi.yaml`. Each method receives the variables that were defined in the `openapi.yaml` file, and wraps a Promise in a try/catch clause. The Promise resolves both success and failure in a call to the `Service.js` utility class for building the appropriate response that will be sent back to the Controller and then to the caller of this endpoint.
+[PHP CodeSniffer Documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki). This tool helps to follow coding style and avoid common PHP coding mistakes.
 
-#### tests/
-- **serverTests.js** - basic server validation tests, checking that the server is up, that a call to an endpoint within the scope of the `openapi.yaml` file returns 200, that a call to a path outside that scope returns 200 if it exists and a 404 if not.
-- **routingTests.js** - Runs through all the endpoints defined in the `openapi.yaml`, and constructs a dummy request to send to the server. Confirms that the response code is 200. At this point requests containing xml or formData fail - currently they are not supported in the router.
-- **additionalEndpointsTests.js** - A test file for all the endpoints that are defined outside the openapi.yaml scope. Confirms that these endpoints return a successful 200 response.
+#### Run
+
+```bash
+$ composer phpcs
+```
+
+#### Config
+
+Package contains fully functional config `./phpcs.xml.dist` file. It checks source code against PSR-1 and PSR-2 coding standards.
+Create `./phpcs.xml` in root folder to override it. More info at [Using a Default Configuration File](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file)
+
+### PHPLint
+
+[PHPLint Documentation](https://github.com/overtrue/phplint). Checks PHP syntax only.
+
+#### Run
+
+```bash
+$ composer phplint
+```
+
+## Show errors
+
+Switch on option in `./index.php`:
+```diff
+/**
+ * Add Error Handling Middleware
+ *
+ * @param bool $displayErrorDetails -> Should be set to false in production
+ * @param bool $logErrors -> Parameter is passed to the default ErrorHandler
+ * @param bool $logErrorDetails -> Display error details in error log
+ * which can be replaced by a callable of your choice.
+
+ * Note: This middleware should be added last. It will not handle any exceptions/errors
+ * for middleware added after it.
+ */
+--- $app->addErrorMiddleware(false, true, true);
++++ $app->addErrorMiddleware(true, true, true);
+```
+
+## API Endpoints
+
+All URIs are relative to *http://localhost/api/v1*
+
+> Important! Do not modify abstract API controllers directly! Instead extend them by implementation classes like:
+
+```php
+// src/Api/PetApi.php
+
+namespace OpenAPIServer\Api;
+
+use OpenAPIServer\Api\AbstractPetApi;
+
+class PetApi extends AbstractPetApi
+{
+
+    public function addPet($request, $response, $args)
+    {
+        // your implementation of addPet method here
+    }
+}
+```
+
+Place all your implementation classes in `./src` folder accordingly.
+For instance, when abstract class located at `./lib/Api/AbstractPetApi.php` you need to create implementation class at `./src/Api/PetApi.php`.
+
+Class | Method | HTTP request | Description
+------------ | ------------- | ------------- | -------------
+*AbstractEventsApi* | **getEvents** | **GET** /events | Get a list of events
+*AbstractEventsApi* | **getEvent** | **GET** /event/{eventId} | Get a single Event
+*AbstractInsightsApi* | **createInsight** | **POST** /insights | Create a new Insight
+*AbstractInsightsApi* | **getInsights** | **GET** /insights | Returns a list of insights
+*AbstractInsightsApi* | **deleteInsight** | **DELETE** /insight/{insightId} | Delete a Insight
+*AbstractInsightsApi* | **getInsight** | **GET** /insight/{insightId} | Return data for a single Insight
+*AbstractInsightsApi* | **updateInsight** | **PUT** /insight/{insightId} | Update a Insight
+*AbstractTestsApi* | **createTest** | **POST** /tests | Create a new Test
+*AbstractTestsApi* | **getTests** | **GET** /tests | Returns a list of current and past tests
+*AbstractTestsApi* | **createSnapshot** | **POST** /test/{testId}/snapshots | Create a new snapshot for a test
+*AbstractTestsApi* | **deleteTest** | **DELETE** /test/{testId} | Delete a Test
+*AbstractTestsApi* | **getSnapshots** | **GET** /test/{testId}/snapshots | Return data snapshots for a test
+*AbstractTestsApi* | **getTest** | **GET** /test/{testId} | Return data for a single Test
+*AbstractTestsApi* | **updateTest** | **PUT** /test/{testId} | Update a Test
+*AbstractTestsApi* | **uploadScreenshot** | **POST** /test/{testId}/{variation}/screenshot | Upload a screenshot of a test variation
 
 
-Future tests should be written to ensure that the response of every request sent should conform to the structure defined in the `openapi.yaml`. This test will fail 100% initially, and the job of the development team will be to clear these tests.
+## Models
 
-
-#### models/
-Currently a concept awaiting feedback. The idea is to have the objects defined in the openapi.yaml act as models which are passed between the different modules. This will conform the programmers to interact using defined objects, rather than loosley-defined JSON objects. Given the nature of JavaScript progrmmers, who want to work with their own bootstrapped parameters, this concept might not work. Keeping this here for future discussion and feedback.
-
+* OpenAPIServer\Model\Error
+* OpenAPIServer\Model\Event
+* OpenAPIServer\Model\InlineObject
+* OpenAPIServer\Model\InlineResponse200
+* OpenAPIServer\Model\Insight
+* OpenAPIServer\Model\InsightLinks
+* OpenAPIServer\Model\Metric
+* OpenAPIServer\Model\Snapshot
+* OpenAPIServer\Model\SnapshotMetrics
+* OpenAPIServer\Model\SnapshotVariation
+* OpenAPIServer\Model\SnapshotVariationData
+* OpenAPIServer\Model\Test
+* OpenAPIServer\Model\TestResults
+* OpenAPIServer\Model\TestStatus
+* OpenAPIServer\Model\TestSummary
+* OpenAPIServer\Model\TestSummaryVariations
+* OpenAPIServer\Model\Variation
+* OpenAPIServer\Model\VariationImages
 
 
