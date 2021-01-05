@@ -10,7 +10,7 @@
     "gen:server": "openapi-generator generate -i openapi.yaml -g nodejs-express-server -o server"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "chart.js": "^2.9.2",
     "core-js": "^3.3.2",
     "highcharts": "^7.2.1",
